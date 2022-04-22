@@ -4,6 +4,11 @@
         <attr name="backgroundColor" format="color" />
         <attr name="defaultPadding" format="dimension" />
         <attr name="defaultElevation" format="dimension" />
+        <attr name="defaultStroke" format="dimension" />
         <attr name="defaultStrokeColor" format="color" />
+        <attr name="buttonType" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="rounded" value="1" />
+        </attr>
     </declare-styleable>
 </resources>

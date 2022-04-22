@@ -13,14 +13,15 @@
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:text="Hello"
+            app:buttonType="rounded"
+            app:defaultStroke="1dp"
             app:defaultStrokeColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            custom:backgroundColor="@android:color/black"
-            custom:defaultElevation="4dp"
-            custom:defaultPadding="5dp" />
-
+            custom:backgroundColor="@color/black"
+            custom:defaultElevation="10dp"
+            custom:defaultPadding="7dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

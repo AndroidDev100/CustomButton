@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 
 class CustomButton : AppCompatButton {
+    private var defaultStroke: Float = 0.0f
     private var defaultStrokeColor: Int = -1
     private var defaultPadding: Float = 0.0f
     private var defaultElevation: Float = 0.0f
@@ -17,6 +18,11 @@ class CustomButton : AppCompatButton {
     var attributeSet: AttributeSet? = null
     var scale: Float? = null
     var clickListner1: ((View) -> Unit)? = null
+    var buttonType: ButtonType? = null
+
+    enum class ButtonType {
+        normal, rounded
+    }
 
     constructor(context: Context, attributeSet: AttributeSet?) : super(
         context,
@@ -43,6 +49,11 @@ class CustomButton : AppCompatButton {
         this.ctx = context
         init(context, null, androidx.appcompat.R.style.Base_TextAppearance_AppCompat_Button)
     }
+
+    inline fun <reified T : Enum<T>> TypedArray.getEnum(index: Int, default: T) =
+        getInt(index, -1).let {
+            if (it >= 0) enumValues<T>()[it] else default
+        }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredWidth = (100 * scale!! + 0.5f).toInt()
@@ -93,17 +104,17 @@ class CustomButton : AppCompatButton {
     private fun init(context: Context, attributeSet: AttributeSet?, style: Int) {
         styledAttributes =
             context.theme.obtainStyledAttributes(attributeSet, R.styleable.CustomButton, 0, 0)
-        context.theme.obtainStyledAttributes(
-            this.attributeSet,
-            R.styleable.CustomButton,
-            0, 0
-        ).apply {
-
+        styledAttributes!!.apply {
             try {
                 defaultBackgroundColor = getColor(R.styleable.CustomButton_backgroundColor, 777)
                 defaultStrokeColor = getColor(R.styleable.CustomButton_defaultStrokeColor, 777)
                 defaultElevation = getDimension(R.styleable.CustomButton_defaultElevation, 1.0f)
                 defaultPadding = getDimension(R.styleable.CustomButton_defaultPadding, 1.0f)
+                defaultStroke = getDimension(R.styleable.CustomButton_defaultStroke, 1.0f)
+                buttonType = styledAttributes!!.getEnum(
+                    R.styleable.CustomButton_buttonType,
+                    ButtonType.normal
+                )
             } finally {
                 recycle()
             }
@@ -111,24 +122,12 @@ class CustomButton : AppCompatButton {
         scale = context.resources.displayMetrics.density
         setTextColor(context.resources.getColor(R.color.white))
         gravity = Gravity.CENTER
-        val shape = GradientDrawable()
-        shape.setCornerRadius((10 * scale!! + 0.5f))
-        if (defaultStrokeColor != -1) {
-            shape.setStroke((3 * scale!! + 0.5f).toInt(), defaultStrokeColor)
-        } else {
-            shape.setStroke((3 * scale!! + 0.5f).toInt(), context.resources.getColor(R.color.black))
-        }
-        if (defaultBackgroundColor != -1) {
-            shape.setColor(defaultBackgroundColor)
-        } else {
-            shape.setColor(context.resources.getColor(R.color.blue))
-        }
-        if (defaultElevation != 0.0f) {
+        if (defaultElevation != 1.0f) {
             elevation = defaultElevation
         } else {
             elevation = 10 * scale!! + 0.5f
         }
-        if (defaultPadding != 0.0f) {
+        if (defaultPadding != 1.0f) {
             setPadding(
                 defaultPadding.toInt(), defaultPadding.toInt(),
                 defaultPadding.toInt(), defaultPadding.toInt()
@@ -141,7 +140,41 @@ class CustomButton : AppCompatButton {
                 (10 * scale!! + 0.5f).toInt()
             )
         }
-        this.background = shape
-        //set custom properties
+
+        if (buttonType == ButtonType.normal) {
+            if (defaultBackgroundColor != -1) {
+                this.setBackgroundColor(defaultBackgroundColor)
+            } else {
+                this.setBackgroundColor(context.resources.getColor(R.color.blue))
+            }
+        } else {
+            val shape = GradientDrawable()
+            shape.setCornerRadius((10 * scale!! + 0.5f))
+            if (defaultStroke != 1.0f) {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke(defaultStroke.toInt(), defaultStrokeColor)
+                } else {
+                    shape.setStroke(
+                        defaultStroke.toInt(),
+                        context.resources.getColor(R.color.black)
+                    )
+                }
+            } else {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke((3 * scale!! + 0.5f).toInt(), defaultStrokeColor)
+                } else {
+                    shape.setStroke(
+                        (3 * scale!! + 0.5f).toInt(),
+                        context.resources.getColor(R.color.black)
+                    )
+                }
+            }
+            if (defaultBackgroundColor != 777) {
+                shape.setColor(defaultBackgroundColor)
+            } else {
+                shape.setColor(context.resources.getColor(R.color.blue))
+            }
+            this.background = shape
+        }
     }
 }
