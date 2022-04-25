@@ -15,6 +15,11 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         clickListner = ::click
         binding!!.customButton.setClickListner(clickListner as ((View) -> (Unit)))
+        binding!!.customButton.setButtonType(CustomButton.ButtonType.rounded)
+        binding!!.customButton.setStroke(5,R.color.black)
+        binding!!.customButton.setButtonBackgroundColor(R.color.blue)
+        binding!!.customButton.setButtonElevation(10)
+        binding!!.customButton.setButtonPadding(5)
     }
 
     fun click(v: View) {

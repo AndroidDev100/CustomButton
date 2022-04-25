@@ -13,15 +13,14 @@
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:text="Hello"
-            app:buttonType="rounded"
-            app:defaultStroke="1dp"
-            app:defaultStrokeColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            custom:backgroundColor="@color/black"
-            custom:defaultElevation="10dp"
-            custom:defaultPadding="7dp" />
+            custom:defaultElevation="@dimen/cardview_compat_inset_shadow"
+            custom:defaultPadding="@dimen/cardview_compat_inset_shadow"
+            custom:defaultStroke="3dp"
+            custom:defaultStrokeColor="@color/black" />
+        add drawable, radius, drawables, background
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

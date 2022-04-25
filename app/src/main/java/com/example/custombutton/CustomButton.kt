@@ -15,10 +15,11 @@ class CustomButton : AppCompatButton {
     private var defaultElevation: Float = 0.0f
     private var defaultBackgroundColor: Int = -1
     var ctx: Context? = null
+    val shape = GradientDrawable()
     var attributeSet: AttributeSet? = null
     var scale: Float? = null
     var clickListner1: ((View) -> Unit)? = null
-    var buttonType: ButtonType? = null
+    var buttonType1: ButtonType? = null
 
     enum class ButtonType {
         normal, rounded
@@ -111,7 +112,7 @@ class CustomButton : AppCompatButton {
                 defaultElevation = getDimension(R.styleable.CustomButton_defaultElevation, 1.0f)
                 defaultPadding = getDimension(R.styleable.CustomButton_defaultPadding, 1.0f)
                 defaultStroke = getDimension(R.styleable.CustomButton_defaultStroke, 1.0f)
-                buttonType = styledAttributes!!.getEnum(
+                buttonType1 = styledAttributes!!.getEnum(
                     R.styleable.CustomButton_buttonType,
                     ButtonType.normal
                 )
@@ -122,12 +123,12 @@ class CustomButton : AppCompatButton {
         scale = context.resources.displayMetrics.density
         setTextColor(context.resources.getColor(R.color.white))
         gravity = Gravity.CENTER
-        if (defaultElevation != 1.0f) {
+        if (defaultElevation != 1.0f && defaultElevation != 0.0f) {
             elevation = defaultElevation
         } else {
             elevation = 10 * scale!! + 0.5f
         }
-        if (defaultPadding != 1.0f) {
+        if (defaultPadding != 1.0f && defaultPadding != 0.0f) {
             setPadding(
                 defaultPadding.toInt(), defaultPadding.toInt(),
                 defaultPadding.toInt(), defaultPadding.toInt()
@@ -141,15 +142,14 @@ class CustomButton : AppCompatButton {
             )
         }
 
-        if (buttonType == ButtonType.normal) {
+        if (buttonType1 == ButtonType.normal) {
             if (defaultBackgroundColor != -1) {
                 this.setBackgroundColor(defaultBackgroundColor)
             } else {
                 this.setBackgroundColor(context.resources.getColor(R.color.blue))
             }
         } else {
-            val shape = GradientDrawable()
-            shape.setCornerRadius((10 * scale!! + 0.5f))
+            shape.setCornerRadius((((width+height)/2) * scale!! + 0.5f))
             if (defaultStroke != 1.0f) {
                 if (defaultStrokeColor != 777) {
                     shape.setStroke(defaultStroke.toInt(), defaultStrokeColor)
@@ -175,6 +175,106 @@ class CustomButton : AppCompatButton {
                 shape.setColor(context.resources.getColor(R.color.blue))
             }
             this.background = shape
+        }
+    }
+    fun setStroke(stroke: Int, strokeColor: Int){
+        if(buttonType1==ButtonType.rounded){
+            defaultStroke=stroke.toFloat()
+            defaultStrokeColor=strokeColor
+            if (defaultStroke != 1.0f && defaultStroke != 0.0f) {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke((defaultStroke.toInt() * scale!! + 0.5f).toInt(), context.resources.getColor(defaultStrokeColor))
+                }
+                else {
+                    shape.setStroke(
+                        (defaultStroke.toInt() * scale!! + 0.5f).toInt(),
+                        context.resources.getColor(R.color.black)
+                    )
+                }
+            }
+            else {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke((3 * scale!! + 0.5f).toInt(), defaultStrokeColor)
+                } else {
+                    shape.setStroke(
+                        (3 * scale!! + 0.5f).toInt(),
+                        context.resources.getColor(R.color.black)
+                    )
+                }
+            }
+        }
+        this.background=shape
+    }
+    fun setButtonType(buttonType:ButtonType){
+        buttonType1=buttonType
+        if (buttonType1 == ButtonType.normal) {
+            if (defaultBackgroundColor != -1) {
+                this.setBackgroundColor(defaultBackgroundColor)
+            } else {
+                this.setBackgroundColor(context.resources.getColor(R.color.blue))
+            }
+        } else {
+            //((layoutParams.width/scale!!- 0.5f) + (layoutParams.width/scale!!- 0.5f))/2
+            shape.setCornerRadius(((layoutParams.width/scale!! + layoutParams.height/scale!!)/10) - 1.0f)
+            if (defaultStroke != 1.0f) {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke(defaultStroke.toInt(), defaultStrokeColor)
+                } else {
+                    shape.setStroke(
+                        defaultStroke.toInt(),
+                        context.resources.getColor(R.color.black)) }
+            } else {
+                if (defaultStrokeColor != 777) {
+                    shape.setStroke((3 * scale!! + 0.5f).toInt(), defaultStrokeColor)
+                } else {
+                    shape.setStroke(
+                        (3 * scale!! + 0.5f).toInt(),
+                        context.resources.getColor(R.color.black)
+                    )
+                }
+            }
+            if (defaultBackgroundColor != 777) {
+                shape.setColor(defaultBackgroundColor)
+            } else {
+                shape.setColor(context.resources.getColor(R.color.blue))
+            }
+            this.background = shape
+        }
+    }
+
+    fun setButtonBackgroundColor(backgroundColorId:Int){
+        if (buttonType1 == ButtonType.normal) {
+            if (backgroundColorId != -1) {
+                this.setBackgroundColor(context.resources.getColor(backgroundColorId))
+            } else {
+                this.setBackgroundColor(context.resources.getColor(R.color.blue))
+            }
+        } else {
+            if (backgroundColorId != 777) {
+                shape.setColor(context.resources.getColor(backgroundColorId))
+            } else {
+                shape.setColor(context.resources.getColor(R.color.blue))
+            }
+            this.background = shape
+        }
+    }
+    fun setButtonElevation(elevationValue:Int){
+        if (elevationValue.toFloat() != 1.0f && elevationValue.toFloat() != 0.0f) {
+            elevation = defaultElevation
+        } else {
+            elevation = 10 * scale!! + 0.5f
+        }
+    }
+    fun setButtonPadding(padding:Int){
+        if (padding.toFloat() != 1.0f && padding.toFloat() != 0.0f) {
+            setPadding((padding * scale!! + 0.5f).toInt(), (padding * scale!! + 0.5f).toInt(), (padding * scale!! + 0.5f).toInt(), (padding * scale!! + 0.5f).toInt())
+        } else {
+            setPadding(
+                (10 * scale!! + 0.5f).toInt(),
+                (10 * scale!! + 0.5f).toInt(),
+                (10 * scale!! + 0.5f).toInt(),
+                (10 * scale!! + 0.5f).toInt()
+            )
         }
     }
 }
